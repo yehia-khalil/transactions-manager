@@ -34,11 +34,9 @@ class Transaction extends Model
         });
     }
 
-    protected function transactionStatus(): Attribute
+    protected function gettransactionStatusAttribute()
     {
-        return Attribute::make(
-            get: fn ($value) => $this->getStatusMapper()[$value]
-        );
+        return $this->getStatusMapper()[$this->attributes['transaction_status_id']];
     }
 
     public function scopeForUser($query)
@@ -58,7 +56,7 @@ class Transaction extends Model
         return $this->belongsTo(TransactionSubCategory::class);
     }
 
-    public function payer()
+    public function user()
     {
         return $this->belongsTo(User::class, 'payer', 'id');
     }

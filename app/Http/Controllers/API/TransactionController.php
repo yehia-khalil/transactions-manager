@@ -16,7 +16,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::forUser()->get();
+        $transactions = Transaction::forUser()
+            ->with('transactionCategory', 'transactionSubCategory', 'user')
+            ->get();
         return TransactionResource::collection($transactions);
     }
 

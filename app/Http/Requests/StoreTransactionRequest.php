@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTransactionRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,13 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'transaction_category_id' => ['required', 'exists:transaction_categories,id'],
+            'transaction_sub_category_id' => ['nullable', Rule::exists('transaction_sub_categories', 'id')->where('transaction_category_id', $this->transaction_category_id)],
+            'amount' => ['required', 'numeric'],
+            'payer' => ['required', 'exists:users,id'],
+            'due_date' => ['required', 'date', 'after:today'],
+            'vat' => ['required', 'numeric', 'min:0', 'max:100'],  // Assuming VAT is a percentage
+            'is_vat_inclusive' => ['required', 'boolean']
         ];
     }
 }
