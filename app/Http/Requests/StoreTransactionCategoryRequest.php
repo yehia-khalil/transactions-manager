@@ -11,7 +11,7 @@ class StoreTransactionCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class StoreTransactionCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:100', 'min:5', 'unique:transaction_categories,name']
         ];
     }
 }

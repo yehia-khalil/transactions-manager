@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTransactionRequest;
+use App\Http\Requests\UpdateTransactionRequest;
+use App\Http\Resources\TransactionResource;
+use App\Models\Transaction;
+use Illuminate\Http\Response;
+
+class TransactionController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $transactions = Transaction::forUser()->get();
+        return TransactionResource::collection($transactions);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreTransactionRequest $request)
+    {
+        $transaction = Transaction::create($request->validated());
+        return TransactionResource::make($transaction);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Transaction $transaction)
+    {
+        return TransactionResource::make($transaction);
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateTransactionRequest $request, Transaction $transaction)
+    {
+        $transaction->update($request->validated());
+        return TransactionResource::make($transaction);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Transaction $transaction)
+    {
+        $transaction->delete();
+        return response()->json(['message' => 'Transaction deleted successfully'], Response::HTTP_NO_CONTENT);
+    }
+}

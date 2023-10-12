@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTransactionSubCategoryRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateTransactionSubCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,7 @@ class UpdateTransactionSubCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'min:5', 'max:100', Rule::unique('transaction_sub_categories')->ignore($this->transaction_sub_category)],
         ];
     }
 }
