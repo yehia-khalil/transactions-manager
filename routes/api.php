@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\API\TransactionCategoryController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TransactionPaymentController;
@@ -34,5 +35,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('transaction_sub_categories', [TransactionSubCategoryController::class, 'index']);
         Route::apiResource('transaction_categories.transaction_sub_categories', TransactionSubCategoryController::class);
         Route::apiResource('transaction_payments', TransactionPaymentController::class);
+        Route::get('generate_report', ReportController::class);
     });
 });

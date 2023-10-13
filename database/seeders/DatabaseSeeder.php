@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $users = User::factory(10)->create();
         $admin = User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@admin.com',
         ]);
-        User::factory(10)->create();
 
         $adminRole = \Spatie\Permission\Models\Role::firstOrCreate([
             'name' => 'admin'
@@ -27,17 +27,8 @@ class DatabaseSeeder extends Seeder
         $userRole = \Spatie\Permission\Models\Role::firstOrCreate([
             'name' => 'user'
         ]);
+        $userRole->users()->attach($users);
         $admin->assignRole($adminRole);
-        TransactionStatus::insert([
-            [
-                'name' => 'Paid'
-            ],
-            [
-                'name' => 'Outstanding'
-            ],
-            [
-                'name' => 'Overdue'
-            ]
-        ]);
+        $this->call([TransactionSeeder::class]);
     }
 }

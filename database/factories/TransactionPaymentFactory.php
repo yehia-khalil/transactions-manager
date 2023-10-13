@@ -17,7 +17,8 @@ class TransactionPaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amount' => $this->faker->numberBetween(10, 100),
+            'transaction_id' => \App\Models\Transaction::factory(),
         ];
     }
 }

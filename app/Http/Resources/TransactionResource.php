@@ -33,8 +33,8 @@ class TransactionResource extends JsonResource
                 return TransactionPaymentResource::collection($this->payments);
             }),
             "due_date" => $this->due_date,
-            "vat" => 15,
-            "is_vat_inclusive" => 1,
+            "vat" => $this->vat,
+            "is_vat_inclusive" => $this->is_vat_inclusive,
             "transaction_status" => $this->transactionStatus
         ];
     }
