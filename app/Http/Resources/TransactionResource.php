@@ -29,10 +29,10 @@ class TransactionResource extends JsonResource
                     "email" => $this->user->email
                 ];
             }),
-            "due_date" => "2023-11-01",
+            "due_date" => $this->due_date,
             "vat" => 15,
             "is_vat_inclusive" => 1,
-            "transaction_status_id" => $this->transactionStatus
+            "transaction_status" => $this->transactionStatus
         ];
     }
 }

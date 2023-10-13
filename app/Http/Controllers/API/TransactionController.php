@@ -18,6 +18,7 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::forUser()
             ->with('transactionCategory', 'transactionSubCategory', 'user')
+            ->withSum('payments','amount')
             ->get();
         return TransactionResource::collection($transactions);
     }

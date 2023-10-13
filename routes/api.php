@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\TransactionCategoryController;
 use App\Http\Controllers\API\TransactionController;
+use App\Http\Controllers\API\TransactionPaymentController;
 use App\Http\Controllers\API\TransactionSubCategoryController;
 use App\Models\TransactionSubCategory;
 use Illuminate\Http\Request;
@@ -32,5 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('transaction_categories', TransactionCategoryController::class);
         Route::get('transaction_sub_categories', [TransactionSubCategoryController::class, 'index']);
         Route::apiResource('transaction_categories.transaction_sub_categories', TransactionSubCategoryController::class);
+        Route::apiResource('transaction_payments', TransactionPaymentController::class);
     });
 });

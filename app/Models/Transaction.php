@@ -13,30 +13,12 @@ class Transaction extends Model
 
     protected $fillable = [
         'transaction_category_id', 'transaction_sub_category_id', 'amount', 'payer',
-        'due_date', 'vat', 'is_vat_inclusive', 'transaction_status_id'
+        'due_date', 'vat', 'is_vat_inclusive'
     ];
-
-    public function getStatusMapper()
-    {
-        return [
-            TransactionStatus::$PAID => 'Paid',
-            TransactionStatus::$OUTSTANDING => 'OutStanding',
-            TransactionStatus::$OVERDUE => 'OverDue'
-        ];
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($transaction) {
-            $transaction->transaction_status_id = self::determineTransactionStatus($transaction->due_date);
-        });
-    }
 
     protected function gettransactionStatusAttribute()
     {
-        return $this->getStatusMapper()[$this->attributes['transaction_status_id']];
+        return $this->determineTransactionStatus($this->attributes['due_date']);
     }
 
     public function scopeForUser($query)
@@ -44,6 +26,11 @@ class Transaction extends Model
         if (!Auth::user()->hasRole('admin')) {
             $query->where('payer', Auth::id());
         }
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(TransactionPayment::class);
     }
 
     public function transactionCategory()
@@ -61,8 +48,11 @@ class Transaction extends Model
         return $this->belongsTo(User::class, 'payer', 'id');
     }
 
-    private static function determineTransactionStatus($dueDate)
+    private function determineTransactionStatus($dueDate)
     {
+        if ($this->payments_sum_amount >= $this->amount) {
+            return TransactionStatus::$PAID;
+        }
         $today = now();
         if ($today > $dueDate) {
             return TransactionStatus::$OVERDUE;

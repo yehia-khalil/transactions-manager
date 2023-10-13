@@ -27,7 +27,7 @@ class StoreTransactionRequest extends FormRequest
             'transaction_sub_category_id' => ['nullable', Rule::exists('transaction_sub_categories', 'id')->where('transaction_category_id', $this->transaction_category_id)],
             'amount' => ['required', 'numeric'],
             'payer' => ['required', 'exists:users,id'],
-            'due_date' => ['required', 'date', 'after:today'],
+            'due_date' => ['required', 'date'],
             'vat' => ['required', 'numeric', 'min:0', 'max:100'],  // Assuming VAT is a percentage
             'is_vat_inclusive' => ['required', 'boolean']
         ];

@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Transaction;
+use App\Models\TransactionPayment;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StoreTransactionPaymentRequest extends FormRequest
 {
@@ -11,7 +15,7 @@ class StoreTransactionPaymentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +26,20 @@ class StoreTransactionPaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'amount' => ['required', 'integer'],
+            'transaction_id' => ['required', Rule::exists('transactions', 'id')]
         ];
+    }
+
+    protected function passedValidation()
+    {
+        $transactionPaidAmount = TransactionPayment::where('transaction_id', $this->transaction_id)->sum('amount');
+        $transactionAmount = Transaction::find($this->transaction_id);
+        if ($transactionPaidAmount == $transactionAmount->amount) {
+            throw ValidationException::withMessages(['invalid amount' => "You already paid this transaction fully."]);
+        }
+        if ($this->amount + $transactionPaidAmount > $transactionAmount->amount) {
+            throw ValidationException::withMessages(['invalid amount' => "Paid amount exceeds current transaction value."]);
+        }
     }
 }
