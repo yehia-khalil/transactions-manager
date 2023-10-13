@@ -14,7 +14,9 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        return User::create($request->Validated());
+        $user = User::create($request->Validated());
+        $user->assignRole('user');
+        return $user;
     }
     /**
      * Handle an authentication attempt.

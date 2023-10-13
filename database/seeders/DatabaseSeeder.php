@@ -21,10 +21,13 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory(10)->create();
 
-        $role = \Spatie\Permission\Models\Role::firstOrCreate([
+        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate([
             'name' => 'admin'
         ]);
-        $admin->assignRole($role);
+        $userRole = \Spatie\Permission\Models\Role::firstOrCreate([
+            'name' => 'user'
+        ]);
+        $admin->assignRole($adminRole);
         TransactionStatus::insert([
             [
                 'name' => 'Paid'

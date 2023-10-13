@@ -17,7 +17,7 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::forUser()
-            ->with('transactionCategory', 'transactionSubCategory', 'user')
+            ->with('transactionCategory', 'transactionSubCategory', 'user','payments')
             ->withSum('payments','amount')
             ->get();
         return TransactionResource::collection($transactions);
@@ -37,6 +37,8 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
+        $transaction->load('transactionCategory', 'transactionSubCategory', 'user', 'payments');
+        $transaction->payments_sum_amount = $transaction->payments->sum('amount');
         return TransactionResource::make($transaction);
     }
 

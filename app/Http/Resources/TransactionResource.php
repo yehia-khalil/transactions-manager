@@ -22,12 +22,15 @@ class TransactionResource extends JsonResource
             "transaction_sub_category_id" => $this->whenLoaded('transactionSubCategory', function () {
                 return $this->transactionSubCategory->name;
             }),
-            "amount" => $this->amount,
+            "amount" => $this->totalAmount,
             "payer" => $this->whenLoaded('user', function () {
                 return [
                     "id" => $this->user->id,
                     "email" => $this->user->email
                 ];
+            }),
+            "payments" => $this->whenLoaded('payments', function () {
+                return TransactionPaymentResource::collection($this->payments);
             }),
             "due_date" => $this->due_date,
             "vat" => 15,

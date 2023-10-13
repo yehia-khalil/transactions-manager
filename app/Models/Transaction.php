@@ -21,6 +21,12 @@ class Transaction extends Model
         return $this->determineTransactionStatus($this->attributes['due_date']);
     }
 
+    protected function getTotalAmountAttribute()
+    {
+        return $this->attributes['is_vat_inclusive'] ?
+            $this->attributes['amount'] * (1+($this->attributes['vat'] / 100)) : $this->attributes['amount'];
+    }
+
     public function scopeForUser($query)
     {
         if (!Auth::user()->hasRole('admin')) {
@@ -50,7 +56,7 @@ class Transaction extends Model
 
     private function determineTransactionStatus($dueDate)
     {
-        if ($this->payments_sum_amount >= $this->amount) {
+        if ($this->payments_sum_amount >= $this->getTotalAmountAttribute()) {
             return TransactionStatus::$PAID;
         }
         $today = now();
