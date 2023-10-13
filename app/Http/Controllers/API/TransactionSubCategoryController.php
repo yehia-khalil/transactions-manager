@@ -53,11 +53,4 @@ class TransactionSubCategoryController extends Controller
         return TransactionSubCategoryResource::make($transaction_sub_category);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TransactionSubCategory $transaction_sub_category)
-    {
-        //
-    }
 }

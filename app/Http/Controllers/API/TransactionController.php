@@ -51,13 +51,4 @@ class TransactionController extends Controller
         $transaction->update($request->validated());
         return TransactionResource::make($transaction);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Transaction $transaction)
-    {
-        $transaction->delete();
-        return response()->json(['message' => 'Transaction deleted successfully'], Response::HTTP_NO_CONTENT);
-    }
 }

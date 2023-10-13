@@ -30,11 +30,11 @@ Route::post('/login', [AuthController::class, 'authenticate']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('transactions', [TransactionController::class, 'index']);
     Route::middleware('role:admin')->group(function () {
-        Route::apiResource('transactions', TransactionController::class)->except('index');
-        Route::apiResource('transaction_categories', TransactionCategoryController::class);
+        Route::apiResource('transactions', TransactionController::class)->except(['index', 'destroy']);
+        Route::apiResource('transaction_categories', TransactionCategoryController::class)->except('destroy');
         Route::get('transaction_sub_categories', [TransactionSubCategoryController::class, 'index']);
-        Route::apiResource('transaction_categories.transaction_sub_categories', TransactionSubCategoryController::class);
-        Route::apiResource('transaction_payments', TransactionPaymentController::class);
+        Route::apiResource('transaction_categories.transaction_sub_categories', TransactionSubCategoryController::class)->except('destroy');
+        Route::apiResource('transaction_payments', TransactionPaymentController::class)->except(['update', 'destroy']);
         Route::get('generate_report', ReportController::class);
     });
 });

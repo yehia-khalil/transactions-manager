@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_category_id')->constrained();
+            $table->foreignId('transaction_sub_category_id')->nullable()->constrained();
             $table->integer('amount');
             $table->foreignId('payer')->references('id')->on('users');
             $table->date('due_date');

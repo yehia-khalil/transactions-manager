@@ -33,22 +33,7 @@ class TransactionPaymentController extends Controller
      */
     public function show(TransactionPayment $transactionPayment)
     {
-        //
+        return TransactionPaymentResource::make($transactionPayment);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateTransactionPaymentRequest $request, TransactionPayment $transactionPayment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TransactionPayment $transactionPayment)
-    {
-        //
-    }
 }

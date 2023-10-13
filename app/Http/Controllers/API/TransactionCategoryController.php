@@ -44,12 +44,4 @@ class TransactionCategoryController extends Controller
         $transaction_category->update($request->validated());
         return TransactionCategoryResource::make($transaction_category);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TransactionCategory $transaction_category)
-    {
-        //TODO: implement this
-    }
 }
