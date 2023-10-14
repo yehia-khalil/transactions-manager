@@ -14,83 +14,47 @@ class ReportController extends Controller
     public function __invoke(Request $request)
     {
         $results = DB::table('transactions')
-    ->select(
-        DB::raw('MONTH(transactions.due_date) as month'),
-        DB::raw('YEAR(transactions.due_date) as year'),
-        DB::raw('SUM(
+            ->select(
+                DB::raw('MONTH(transactions.due_date) as month'),
+                DB::raw('YEAR(transactions.due_date) as year'),
+                DB::raw('SUM(
             CASE
-                WHEN transactions.due_date < NOW() AND (
-                    CASE
-                        WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                        ELSE transactions.amount
-                    END
-                ) > (
-                    SELECT COALESCE(SUM(amount), 0)
-                    FROM transaction_payments
-                    WHERE transaction_payments.transaction_id = transactions.id
-                ) THEN (
-                    CASE
-                        WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                        ELSE transactions.amount
-                    END
-                ) - (
-                    SELECT COALESCE(SUM(amount), 0)
-                    FROM transaction_payments
-                    WHERE transaction_payments.transaction_id = transactions.id
-                )
+                WHEN transactions.due_date < NOW() THEN
+                    GREATEST(
+                        CASE
+                            WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
+                            ELSE transactions.amount
+                        END -
+                        COALESCE(transaction_payments.amount, 0),
+                        0
+                    )
                 ELSE 0
             END
         ) as overdue'),
-        DB::raw('SUM(
+                DB::raw('SUM(
             CASE
-                WHEN transactions.due_date >= NOW() AND (
-                    CASE
-                        WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                        ELSE transactions.amount
-                    END
-                ) > (
-                    SELECT COALESCE(SUM(amount), 0)
-                    FROM transaction_payments
-                    WHERE transaction_payments.transaction_id = transactions.id
-                ) THEN (
-                    CASE
-                        WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                        ELSE transactions.amount
-                    END
-                ) - (
-                    SELECT COALESCE(SUM(amount), 0)
-                    FROM transaction_payments
-                    WHERE transaction_payments.transaction_id = transactions.id
-                )
+                WHEN transactions.due_date >= NOW() THEN
+                    GREATEST(
+                        CASE
+                            WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
+                            ELSE transactions.amount
+                        END -
+                        COALESCE(transaction_payments.amount, 0),
+                        0
+                    )
                 ELSE 0
             END
         ) as outstanding'),
-        DB::raw('SUM(
-            CASE
-                WHEN (
-                    SELECT COALESCE(SUM(amount), 0)
-                    FROM transaction_payments
-                    WHERE transaction_payments.transaction_id = transactions.id
-                ) >= (
-                    CASE
-                        WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                        ELSE transactions.amount
-                    END
-                ) THEN (
-                    CASE
-                        WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                        ELSE transactions.amount
-                    END
-                )
-                ELSE 0
-            END
+                DB::raw('SUM(
+            COALESCE(transaction_payments.amount, 0)
         ) as paid')
-    )
-    ->leftJoin('transaction_payments', 'transactions.id', '=', 'transaction_payments.transaction_id')
-    ->whereBetween('transactions.due_date', [$request->startDate, $request->endDate])
-    ->groupBy(DB::raw('MONTH(transactions.due_date)'), DB::raw('YEAR(transactions.due_date)'))
-    ->get()
-    ->toArray();
+            )
+            ->leftJoin('transaction_payments', 'transactions.id', '=', 'transaction_payments.transaction_id')
+            ->whereBetween('transactions.due_date', [$request->startDate, $request->endDate])
+            ->groupBy(DB::raw('MONTH(transactions.due_date)'), DB::raw('YEAR(transactions.due_date)'))
+            ->get()
+            ->toArray();
+
 
         return response()->json($results);
     }

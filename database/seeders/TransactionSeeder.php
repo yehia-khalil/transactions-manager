@@ -32,19 +32,21 @@ class TransactionSeeder extends Seeder
         for ($year = $startYear; $year <= $currentDate->year; $year++) {
             // Loop for transactions every 4 months
             for ($month = 1; $month <= 12; $month += 4) {
-                $dueDate = Carbon::create($year, $month, 1);
-                $transaction = Transaction::factory()->create([
-                    'due_date' => $dueDate,
-                    'payer' => (User::first())->id,
-                    'transaction_category_id' => $category->id,
-                    'amount' => 1000
-                ]);
-                $rand = rand(1, 100);
-                if ($rand > 50) {
-                    TransactionPayment::factory()->create([
-                        'transaction_id' => $transaction->id,
+                for ($i = 1; $i < 4; $i++) {
+                    $dueDate = Carbon::create($year, $month, $i);
+                    $transaction = Transaction::factory()->create([
+                        'due_date' => $dueDate,
+                        'payer' => (User::first())->id,
+                        'transaction_category_id' => $category->id,
                         'amount' => 1000
                     ]);
+                    $rand = rand(1, 100);
+                    if ($rand > 50) {
+                        TransactionPayment::factory()->create([
+                            'transaction_id' => $transaction->id,
+                            'amount' => 1000
+                        ]);
+                    }
                 }
             }
         }

@@ -33,78 +33,42 @@ class GenerateReport implements ShouldQueue
                 DB::raw('MONTH(transactions.due_date) as month'),
                 DB::raw('YEAR(transactions.due_date) as year'),
                 DB::raw('SUM(
-                CASE
-                    WHEN transactions.due_date < NOW() AND (
+            CASE
+                WHEN transactions.due_date < NOW() THEN
+                    GREATEST(
                         CASE
                             WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
                             ELSE transactions.amount
-                        END
-                    ) > (
-                        SELECT COALESCE(SUM(amount), 0)
-                        FROM transaction_payments
-                        WHERE transaction_payments.transaction_id = transactions.id
-                    ) THEN (
-                        CASE
-                            WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                            ELSE transactions.amount
-                        END
-                    ) - (
-                        SELECT COALESCE(SUM(amount), 0)
-                        FROM transaction_payments
-                        WHERE transaction_payments.transaction_id = transactions.id
+                        END -
+                        COALESCE(transaction_payments.amount, 0),
+                        0
                     )
-                    ELSE 0
-                END
-            ) as overdue'),
+                ELSE 0
+            END
+        ) as overdue'),
                 DB::raw('SUM(
-                CASE
-                    WHEN transactions.due_date >= NOW() AND (
+            CASE
+                WHEN transactions.due_date >= NOW() THEN
+                    GREATEST(
                         CASE
                             WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
                             ELSE transactions.amount
-                        END
-                    ) > (
-                        SELECT COALESCE(SUM(amount), 0)
-                        FROM transaction_payments
-                        WHERE transaction_payments.transaction_id = transactions.id
-                    ) THEN (
-                        CASE
-                            WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                            ELSE transactions.amount
-                        END
-                    ) - (
-                        SELECT COALESCE(SUM(amount), 0)
-                        FROM transaction_payments
-                        WHERE transaction_payments.transaction_id = transactions.id
+                        END -
+                        COALESCE(transaction_payments.amount, 0),
+                        0
                     )
-                    ELSE 0
-                END
-            ) as outstanding'),
+                ELSE 0
+            END
+        ) as outstanding'),
                 DB::raw('SUM(
-                CASE
-                    WHEN (
-                        SELECT COALESCE(SUM(amount), 0)
-                        FROM transaction_payments
-                        WHERE transaction_payments.transaction_id = transactions.id
-                    ) >= (
-                        CASE
-                            WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                            ELSE transactions.amount
-                        END
-                    ) THEN (
-                        CASE
-                            WHEN is_vat_inclusive = 1 THEN transactions.amount * (1 + transactions.vat / 100)
-                            ELSE transactions.amount
-                        END
-                    )
-                    ELSE 0
-                END
-            ) as paid')
+            COALESCE(transaction_payments.amount, 0)
+        ) as paid')
             )
             ->leftJoin('transaction_payments', 'transactions.id', '=', 'transaction_payments.transaction_id')
-            ->whereBetween('transactions.due_date', [$this->startDate, $this->endDate])
+            ->whereBetween('transactions.due_date', [$request->startDate, $request->endDate])
             ->groupBy(DB::raw('MONTH(transactions.due_date)'), DB::raw('YEAR(transactions.due_date)'))
-            ->get();        // Generate Excel file
+            ->get();
+        // Generate Excel file
         $fileName = 'MonthlyReport-' . now()->format('YmdHis') . '.xlsx';
         $path = 'reports_' . $fileName;
 
