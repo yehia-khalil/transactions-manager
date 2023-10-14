@@ -31,7 +31,7 @@ class TransactionSeeder extends Seeder
         $startYear = $currentDate->year - 5;
         for ($year = $startYear; $year <= $currentDate->year; $year++) {
             // Loop for transactions every 4 months
-            for ($month = 1; $month <= 12; $month += 6) {
+            for ($month = 1; $month <= 12; $month += 4) {
                 $dueDate = Carbon::create($year, $month, 1);
                 $transaction = Transaction::factory()->create([
                     'due_date' => $dueDate,
