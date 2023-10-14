@@ -29,6 +29,6 @@ class DatabaseSeeder extends Seeder
         ]);
         $userRole->users()->attach($users);
         $admin->assignRole($adminRole);
-        $this->call([TransactionSeeder::class]);
+        // $this->call([TransactionSeeder::class]);
     }
 }
