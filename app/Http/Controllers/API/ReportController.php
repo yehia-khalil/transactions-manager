@@ -89,7 +89,8 @@ class ReportController extends Controller
     ->leftJoin('transaction_payments', 'transactions.id', '=', 'transaction_payments.transaction_id')
     ->whereBetween('transactions.due_date', [$request->startDate, $request->endDate])
     ->groupBy(DB::raw('MONTH(transactions.due_date)'), DB::raw('YEAR(transactions.due_date)'))
-    ->get();
+    ->get()
+    ->toArray();
 
         return response()->json($results);
     }
