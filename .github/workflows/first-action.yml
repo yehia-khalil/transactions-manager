@@ -12,7 +12,6 @@ jobs:
         uses: php-actions/composer@v6
         with:
           php_version: "8.1"
-          dev: no
           args: --ignore-platform-reqs
       - name: create .env file
         run: cp .env.example .env
