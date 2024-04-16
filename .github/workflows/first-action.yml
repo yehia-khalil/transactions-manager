@@ -10,5 +10,6 @@ jobs:
         run: echo "Hello World!"
       - name: print goodbye
         run: echo "Goodbye"
-      
+      - name: prints readme
+        run: echo '$(cat README.md)'
     
