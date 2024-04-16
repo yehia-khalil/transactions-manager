@@ -1,9 +1,9 @@
-name: first-workflow
+name: run-tests
 
 on: workflow_dispatch #we can manually trigger the workflow
 
 jobs:
-  first:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
