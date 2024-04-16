@@ -1,0 +1,14 @@
+name: first-workflow
+
+on: workflow_dispatch #we can manually trigger the workflow
+
+jobs:
+  first:
+    runs-on: ubuntu-latest
+    steps:
+      - name: prints greeting
+        run: echo "Hello World!"
+      - name: print goodbye
+        run: echo "Goodbye"
+      
+    
