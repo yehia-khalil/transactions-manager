@@ -11,5 +11,5 @@ jobs:
       - name: print goodbye
         run: echo "Goodbye"
       - name: prints readme
-        run: echo '$(cat README.md)'
+        run: echo "$(cat README.md)"
     
