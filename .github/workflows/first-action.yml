@@ -8,10 +8,11 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
-      - name: prints greeting
-        run: echo "Hello World!"
-      - name: print goodbye
-        run: echo "Goodbye"
-      - name: prints readme
-        run: echo "$(cat README.md)"
-    
+      - name: install php and composer
+        uses: php-actions/composer@v6
+      - name: create .env file
+        run: cp .env.example .env
+      - name: create app key
+        run: php artisan key:generate
+      - name: run tests
+        run: php artisan test
