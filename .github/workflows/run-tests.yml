@@ -1,9 +1,22 @@
 name: run-tests
 
-on: workflow_dispatch #we can manually trigger the workflow
+on: [push, workflow_dispatch] #we can manually trigger the workflow
 
 jobs:
-  test:
+  phplint:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v1
+        - name: "laravel-pint"
+          uses: aglipanci/laravel-pint-action@2.0.0
+          with:
+            preset: laravel
+            verboseMode: true
+            testMode: true
+            configPath: "vendor/my-company/coding-style/pint.json"
+            pintVersion: 1.8.0
+            onlyDirty: true
+  run-tests:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
@@ -19,3 +32,21 @@ jobs:
         run: php artisan key:generate
       - name: run tests
         run: php artisan test
+
+  build:
+    needs: [phplint, run-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: install php and composer
+        uses: php-actions/composer@v6
+        with:
+          php_version: "8.1"
+          args: --ignore-platform-reqs
+      - name: create .env file
+        run: cp .env.example .env
+      - name: create app key
+        run: php artisan key:generate
+      - name: deploy app
+        run: echo "app deploying..."
