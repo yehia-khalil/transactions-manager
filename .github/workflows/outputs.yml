@@ -1,5 +1,7 @@
 name: Outputs secret info
-on: workflow_dispatch
+on: 
+  issues:
+    types: opened
 
 jobs:
   output:
