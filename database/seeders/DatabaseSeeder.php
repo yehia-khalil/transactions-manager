@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\TransactionStatus;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -22,10 +21,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $adminRole = \Spatie\Permission\Models\Role::firstOrCreate([
-            'name' => 'admin'
+            'name' => 'admin',
         ]);
         $userRole = \Spatie\Permission\Models\Role::firstOrCreate([
-            'name' => 'user'
+            'name' => 'user',
         ]);
         $userRole->users()->attach($users);
         $admin->assignRole($adminRole);

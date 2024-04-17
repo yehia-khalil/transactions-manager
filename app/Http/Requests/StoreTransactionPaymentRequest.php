@@ -28,7 +28,7 @@ class StoreTransactionPaymentRequest extends FormRequest
         return [
             'amount' => ['required', 'integer'],
             'transaction_id' => ['required', Rule::exists('transactions', 'id')],
-            'details' => ['nullable', 'string', 'max:255']
+            'details' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -37,10 +37,10 @@ class StoreTransactionPaymentRequest extends FormRequest
         $transactionPaidAmount = TransactionPayment::where('transaction_id', $this->transaction_id)->sum('amount');
         $transactionAmount = Transaction::find($this->transaction_id);
         if ($transactionPaidAmount == $transactionAmount->totalAmount) {
-            throw ValidationException::withMessages(['invalid amount' => "You already paid this transaction fully."]);
+            throw ValidationException::withMessages(['invalid amount' => 'You already paid this transaction fully.']);
         }
         if ($this->amount + $transactionPaidAmount > $transactionAmount->totalAmount) {
-            throw ValidationException::withMessages(['invalid amount' => "Paid amount exceeds current transaction value."]);
+            throw ValidationException::withMessages(['invalid amount' => 'Paid amount exceeds current transaction value.']);
         }
     }
 }

@@ -20,6 +20,7 @@ class RunGenerateReport extends Command
      * @var string
      */
     protected $description = 'Generate monthly financial report';
+
     /**
      * Execute the console command.
      */

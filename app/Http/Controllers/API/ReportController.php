@@ -55,7 +55,6 @@ class ReportController extends Controller
             ->get()
             ->toArray();
 
-
         return response()->json($results);
     }
 }

@@ -10,6 +10,8 @@ class TransactionStatus extends Model
     use HasFactory;
 
     public static $PAID = 'Paid';
+
     public static $OUTSTANDING = 'OutStanding';
+
     public static $OVERDUE = 'Overdue';
 }

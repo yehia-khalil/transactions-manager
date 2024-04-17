@@ -16,6 +16,7 @@ class TransactionCategoryController extends Controller
     public function index()
     {
         $transactionCategories = TransactionCategory::all();
+
         return TransactionCategoryResource::collection($transactionCategories);
     }
 
@@ -25,6 +26,7 @@ class TransactionCategoryController extends Controller
     public function store(StoreTransactionCategoryRequest $request)
     {
         $transactionCategory = TransactionCategory::create($request->validated());
+
         return TransactionCategoryResource::make($transactionCategory);
     }
 
@@ -42,6 +44,7 @@ class TransactionCategoryController extends Controller
     public function update(UpdateTransactionCategoryRequest $request, TransactionCategory $transaction_category)
     {
         $transaction_category->update($request->validated());
+
         return TransactionCategoryResource::make($transaction_category);
     }
 }

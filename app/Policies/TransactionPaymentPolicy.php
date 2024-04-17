@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\TransactionPayment;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TransactionPaymentPolicy
 {

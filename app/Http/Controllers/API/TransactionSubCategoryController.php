@@ -19,6 +19,7 @@ class TransactionSubCategoryController extends Controller
         $transaction_sub_categories = TransactionSubCategory::when($transaction_category, function ($q) use ($transaction_category) {
             $q->where('transaction_category_id', $transaction_category);
         })->get();
+
         return TransactionSubCategoryResource::collection($transaction_sub_categories);
     }
 
@@ -28,6 +29,7 @@ class TransactionSubCategoryController extends Controller
     public function store(StoreTransactionSubCategoryRequest $request, TransactionCategory $transaction_category)
     {
         $subCategory = $transaction_category->subCategories()->create($request->validated());
+
         return TransactionSubCategoryResource::make($subCategory);
     }
 
@@ -37,9 +39,9 @@ class TransactionSubCategoryController extends Controller
     public function show(TransactionCategory $transaction_category, TransactionSubCategory $transaction_sub_category)
     {
         $subCategory = TransactionSubCategory::where('transaction_category_id', $transaction_category->id)->findOrFail($transaction_sub_category->id);
+
         return TransactionSubCategoryResource::make($subCategory);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -50,7 +52,7 @@ class TransactionSubCategoryController extends Controller
             abort(404);
         }
         $transaction_sub_category->update($request->validated());
+
         return TransactionSubCategoryResource::make($transaction_sub_category);
     }
-
 }

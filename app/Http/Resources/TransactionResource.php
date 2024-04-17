@@ -15,27 +15,27 @@ class TransactionResource extends JsonResource
     public function toArray(Request $request)
     {
         return [
-            "id" => $this->id,
-            "transaction_category_id" => $this->whenLoaded('transactionCategory', function () {
+            'id' => $this->id,
+            'transaction_category_id' => $this->whenLoaded('transactionCategory', function () {
                 return $this->transactionCategory->name;
             }),
-            "transaction_sub_category_id" => $this->whenLoaded('transactionSubCategory', function () {
+            'transaction_sub_category_id' => $this->whenLoaded('transactionSubCategory', function () {
                 return $this->transactionSubCategory->name;
             }),
-            "amount" => $this->totalAmount,
-            "payer" => $this->whenLoaded('user', function () {
+            'amount' => $this->totalAmount,
+            'payer' => $this->whenLoaded('user', function () {
                 return [
-                    "id" => $this->user->id,
-                    "email" => $this->user->email
+                    'id' => $this->user->id,
+                    'email' => $this->user->email,
                 ];
             }),
-            "payments" => $this->whenLoaded('payments', function () {
+            'payments' => $this->whenLoaded('payments', function () {
                 return TransactionPaymentResource::collection($this->payments);
             }),
-            "due_date" => $this->due_date,
-            "vat" => $this->vat,
-            "is_vat_inclusive" => $this->is_vat_inclusive,
-            "transaction_status" => $this->transactionStatus
+            'due_date' => $this->due_date,
+            'vat' => $this->vat,
+            'is_vat_inclusive' => $this->is_vat_inclusive,
+            'transaction_status' => $this->transactionStatus,
         ];
     }
 }

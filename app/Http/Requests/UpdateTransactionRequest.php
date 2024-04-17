@@ -29,7 +29,7 @@ class UpdateTransactionRequest extends FormRequest
             'payer' => ['required', 'exists:users,id'],
             'due_date' => ['required', 'date'],
             'vat' => ['required', 'numeric', 'min:0', 'max:100'],  // Assuming VAT is a percentage
-            'is_vat_inclusive' => ['required', 'boolean']
+            'is_vat_inclusive' => ['required', 'boolean'],
         ];
     }
 }

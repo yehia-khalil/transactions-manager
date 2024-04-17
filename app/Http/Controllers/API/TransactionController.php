@@ -7,7 +7,6 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
-use Illuminate\Http\Response;
 
 class TransactionController extends Controller
 {
@@ -17,9 +16,10 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::forUser()
-            ->with('transactionCategory', 'transactionSubCategory', 'user','payments')
-            ->withSum('payments','amount')
+            ->with('transactionCategory', 'transactionSubCategory', 'user', 'payments')
+            ->withSum('payments', 'amount')
             ->get();
+
         return TransactionResource::collection($transactions);
     }
 
@@ -29,6 +29,7 @@ class TransactionController extends Controller
     public function store(StoreTransactionRequest $request)
     {
         $transaction = Transaction::create($request->validated());
+
         return TransactionResource::make($transaction);
     }
 
@@ -39,9 +40,9 @@ class TransactionController extends Controller
     {
         $transaction->load('transactionCategory', 'transactionSubCategory', 'user', 'payments');
         $transaction->payments_sum_amount = $transaction->payments->sum('amount');
+
         return TransactionResource::make($transaction);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -49,6 +50,7 @@ class TransactionController extends Controller
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         $transaction->update($request->validated());
+
         return TransactionResource::make($transaction);
     }
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\API\TransactionCategoryController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TransactionPaymentController;
 use App\Http\Controllers\API\TransactionSubCategoryController;
-use App\Models\TransactionSubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

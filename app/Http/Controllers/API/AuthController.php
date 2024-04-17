@@ -16,8 +16,10 @@ class AuthController extends Controller
     {
         $user = User::create($request->Validated());
         $user->assignRole('user');
+
         return $user;
     }
+
     /**
      * Handle an authentication attempt.
      *
@@ -28,13 +30,14 @@ class AuthController extends Controller
     {
         if (Auth::attempt($request->validated())) {
             Auth::user()->tokens()->delete();
+
             return SuccessResource::make([
                 'token' => Auth::user()->createToken(Auth::user()->name)->plainTextToken,
-                'user'  => Auth::user()
+                'user' => Auth::user(),
             ]);
         } else {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => 'Invalid credentials',
             ], 401);
         }
     }

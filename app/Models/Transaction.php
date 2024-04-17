@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +12,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'transaction_category_id', 'transaction_sub_category_id', 'amount', 'payer',
-        'due_date', 'vat', 'is_vat_inclusive'
+        'due_date', 'vat', 'is_vat_inclusive',
     ];
 
     protected function gettransactionStatusAttribute()
@@ -24,12 +23,12 @@ class Transaction extends Model
     protected function getTotalAmountAttribute()
     {
         return $this->attributes['is_vat_inclusive'] ?
-            $this->attributes['amount'] * (1+($this->attributes['vat'] / 100)) : $this->attributes['amount'];
+            $this->attributes['amount'] * (1 + ($this->attributes['vat'] / 100)) : $this->attributes['amount'];
     }
 
     public function scopeForUser($query)
     {
-        if (!Auth::user()->hasRole('admin')) {
+        if (! Auth::user()->hasRole('admin')) {
             $query->where('payer', Auth::id());
         }
     }
@@ -63,6 +62,7 @@ class Transaction extends Model
         if ($today > $dueDate) {
             return TransactionStatus::$OVERDUE;
         }
+
         // Additional logic for other statuses like PAID if needed
         return TransactionStatus::$OUTSTANDING;
     }

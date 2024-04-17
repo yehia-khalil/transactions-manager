@@ -2,22 +2,21 @@
 
 namespace App\Jobs;
 
+use App\Exports\ReportExport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\MonthlyReportExport;
-use App\Exports\ReportExport;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
-use Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     protected $startDate;
+
     protected $endDate;
 
     public function __construct($startDate, $endDate)
@@ -25,6 +24,7 @@ class GenerateReport implements ShouldQueue
         $this->startDate = $startDate;
         $this->endDate = $endDate;
     }
+
     public function handle()
     {
         // Your query logic here
@@ -69,13 +69,13 @@ class GenerateReport implements ShouldQueue
             ->groupBy(DB::raw('MONTH(transactions.due_date)'), DB::raw('YEAR(transactions.due_date)'))
             ->get();
         // Generate Excel file
-        $fileName = 'MonthlyReport-' . now()->format('YmdHis') . '.xlsx';
-        $path = 'reports_' . $fileName;
+        $fileName = 'MonthlyReport-'.now()->format('YmdHis').'.xlsx';
+        $path = 'reports_'.$fileName;
 
         Excel::store(new ReportExport($results), $path);
 
         // Then download the file with a valid filename
-        return response()->download(storage_path("app/{$path}"), 'report_' . date('Y-m-d') . '.xlsx');
+        return response()->download(storage_path("app/{$path}"), 'report_'.date('Y-m-d').'.xlsx');
 
         // Code to download the file or move it to desired location
         // ...

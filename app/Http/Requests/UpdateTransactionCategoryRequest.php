@@ -23,7 +23,7 @@ class UpdateTransactionCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', 'min:5', Rule::unique('transaction_categories')->ignore($this->transaction_category)]
+            'name' => ['required', 'string', 'max:100', 'min:5', Rule::unique('transaction_categories')->ignore($this->transaction_category)],
         ];
     }
 }

@@ -8,7 +8,6 @@ use App\Models\TransactionPayment;
 use App\Models\TransactionSubCategory;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TransactionSeeder extends Seeder
@@ -23,7 +22,7 @@ class TransactionSeeder extends Seeder
             ->create()
             ->each(function ($transactionCategory) {
                 TransactionSubCategory::factory()->count(2)->create([
-                    'transaction_category_id' => $transactionCategory->id
+                    'transaction_category_id' => $transactionCategory->id,
                 ]);
             });
         $category = TransactionCategory::first();
@@ -38,13 +37,13 @@ class TransactionSeeder extends Seeder
                         'due_date' => $dueDate,
                         'payer' => (User::first())->id,
                         'transaction_category_id' => $category->id,
-                        'amount' => 1000
+                        'amount' => 1000,
                     ]);
                     $rand = rand(1, 100);
                     if ($rand > 50) {
                         TransactionPayment::factory()->create([
                             'transaction_id' => $transaction->id,
-                            'amount' => 1000
+                            'amount' => 1000,
                         ]);
                     }
                 }
